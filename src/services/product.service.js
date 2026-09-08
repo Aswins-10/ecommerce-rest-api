@@ -5,7 +5,7 @@
  *
  * ── Category filtering with descendants ────────────────────────────────────────
  * When a user filters by category C, we must include products from C AND all
- * subcategories at any depth. Using the materialized path pattern from Phase 5:
+ * subcategories at any depth. Using the materialized path pattern:
  *
  *   Step 1: Find all categories where C._id is in their ancestors array,
  *           plus C itself → gives us a flat list of all matching category IDs.

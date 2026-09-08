@@ -40,7 +40,7 @@ const protect = asyncHandler(async (req, res, next) => {
   // ── 2. Verify token ─────────────────────────────────────────────────────────
   // verifyToken throws JsonWebTokenError or TokenExpiredError on failure —
   // those are caught by asyncHandler and forwarded to the error handler,
-  // which will map them to 401 responses in Phase 8.
+  // which are mapped to 401 responses by the global error handler.
   let decoded;
   try {
     decoded = verifyToken(token);

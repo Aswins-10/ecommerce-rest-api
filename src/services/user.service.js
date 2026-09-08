@@ -25,7 +25,7 @@ const AppError = require('../utils/AppError');
  */
 const findUserOrFail = async (id) => {
   // Mongoose will throw a CastError for invalid ObjectId format —
-  // the global error handler (Phase 8) maps that to 400.
+  // the global error handler maps that to 400.
   const user = await User.findById(id);
   if (!user) {
     throw new AppError('User not found', 404);

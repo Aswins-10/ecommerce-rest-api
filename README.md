@@ -193,7 +193,10 @@ ecommerce-rest-api/
 │       └── validators.test.js        # Joi validator unit tests
 ├── .env.example                      # Committed template for environment variables
 ├── .gitignore
+├── .dockerignore                     # Excludes secrets and dev files from Docker image
 ├── app.js                            # Express application setup
+├── docker-compose.yml                # Docker Compose for containerized deployment
+├── Dockerfile                        # Multi-stage production Docker image
 ├── nodemon.json                      # Nodemon dev configuration
 ├── package.json
 ├── README.md
@@ -251,6 +254,37 @@ The server will boot, verify required variables, connect to MongoDB Atlas, and l
 ```bash
 npm start
 ```
+
+---
+
+## Running with Docker
+
+A production-ready Docker setup is included (`Dockerfile` + `docker-compose.yml`).
+
+### Prerequisites
+- [Docker](https://docs.docker.com/get-docker/) installed and running
+- Your `.env` file configured (see [Environment Variables](#environment-variables))
+
+### Build and run
+```bash
+# Build the image and start the container
+docker compose up --build
+
+# Run in detached mode (background)
+docker compose up --build -d
+```
+
+The API will be available at `http://localhost:3000`.
+
+### Stop the container
+```bash
+docker compose down
+```
+
+> [!NOTE]
+> The `MONGODB_URI` in your `.env` must be accessible from within the Docker container.
+> If using **MongoDB Atlas**, ensure the Atlas cluster allows connections from `0.0.0.0/0`
+> (or the specific Docker host IP) under **Network Access** settings.
 
 ---
 

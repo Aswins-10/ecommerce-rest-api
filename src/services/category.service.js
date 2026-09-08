@@ -19,7 +19,7 @@
  *
  * delete:
  *   - Block if category has children
- *   - Block if any products belong to this category (checked after Phase 6)
+ *   - Block if any products belong to this category
  *
  * getTree:
  *   - Fetch all categories, build nested tree in JS (no aggregation needed)
@@ -278,7 +278,7 @@ const updateCategory = async (id, { name, description, parent }) => {
 
 /**
  * Delete a category.
- * Blocks if the category has children or (Phase 6+) associated products.
+ * Blocks if the category has children or associated products.
  *
  * @param {string} id
  */
@@ -296,23 +296,16 @@ const deleteCategory = async (id) => {
     );
   }
 
-  // NOTE: Product check will be enforced in Phase 6.
-  // The product service will also call this before allowing deletion.
-  // For now: a lazy require to avoid circular dependency if Product model is loaded later.
-  try {
-    const Product = require('../models/product.model');
-    const productCount = await Product.countDocuments({ category: id });
-    if (productCount > 0) {
-      throw new AppError(
-        `Cannot delete: ${productCount} product${productCount === 1 ? '' : 's'} belong to this category. ` +
-        'Reassign them first.',
-        400
-      );
-    }
-  } catch (err) {
-    // If product model doesn't exist yet (Phase < 6), skip the check
-    if (err instanceof AppError) throw err;
-    // Otherwise: module not found → skip silently
+  // Check if any products still reference this category.
+  // Lazy require avoids a potential module circular dependency at load time.
+  const Product = require('../models/product.model');
+  const productCount = await Product.countDocuments({ category: id });
+  if (productCount > 0) {
+    throw new AppError(
+      `Cannot delete: ${productCount} product${productCount === 1 ? '' : 's'} belong to this category. ` +
+      'Reassign or delete them first.',
+      400
+    );
   }
 
   await Category.findByIdAndDelete(id);

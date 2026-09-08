@@ -9,7 +9,7 @@
  *   - `sku` is unique — the business identifier for a product.
  *   - `price` is the regular/list price. `salePrice` is the discounted price.
  *     Effective selling price = salePrice ?? price (computed in service, never trusted from client).
- *   - `stock` is decremented atomically in Phase 7 (findOneAndUpdate with $inc).
+ *   - `stock` is decremented atomically using `findOneAndUpdate` with `$inc` inside a transaction.
  *   - `status` drives visibility: only 'active' products appear in public listings.
  *     'archived' is a soft-delete — the product is hidden but its data is preserved
  *     so existing orders still reference it.
